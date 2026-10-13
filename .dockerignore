@@ -1,0 +1,9 @@
+**/.git
+**/.vs
+**/bin
+**/obj
+**/*.user
+**/*.suo
+**/models/qwen3.5_0.8b.gguf
+**/*.pptx
+training/

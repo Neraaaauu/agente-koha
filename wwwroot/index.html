@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agente Inteligente - Biblioteca Central Mexicali | UABC</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            uabc: {
+              green: '#00723f',
+              darkgreen: '#00522c',
+              lightgreen: '#e6f4ea',
+              gold: '#dd971a',
+              goldlight: '#fdf6e7'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    @keyframes pulse-subtle { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+    .pulse-loading { animation: pulse-subtle 1.5s infinite ease-in-out; }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans h-screen flex flex-col overflow-hidden">
+
+  <!-- Header Institucional UABC -->
+  <header class="bg-uabc-green text-white shadow-md border-b-4 border-uabc-gold flex-shrink-0 z-10">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-11 h-11 bg-white rounded-full flex items-center justify-center text-uabc-green font-extrabold text-xl shadow border-2 border-uabc-gold">
+          🎓
+        </div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <h1 class="font-bold text-lg md:text-xl tracking-tight leading-tight">Biblioteca Central Mexicali</h1>
+            <span class="bg-uabc-gold text-white text-[11px] font-bold px-2 py-0.5 rounded uppercase tracking-wider">UABC</span>
+          </div>
+          <p class="text-xs text-green-100 flex items-center gap-2">
+            <span>Agente Inteligente de Búsqueda y Recuperación</span>
+            <span class="text-green-300">•</span>
+            <span class="hidden sm:inline text-green-200">Koha REST API Integration</span>
+          </p>
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-3">
+        <!-- Status Indicator -->
+        <div id="statusBadge" class="hidden md:flex items-center px-3 py-1 bg-uabc-darkgreen rounded-full border border-green-700 text-xs text-green-100">
+          <span class="w-2.5 h-2.5 bg-emerald-400 rounded-full mr-2 animate-ping"></span>
+          <span id="modeText">Koha Sandbox (Mock Fiel)</span>
+        </div>
+        <!-- Tech Specs Button -->
+        <button onclick="toggleModal('techModal')" class="bg-white/10 hover:bg-white/20 text-white text-xs px-3 py-1.5 rounded-lg border border-white/20 transition flex items-center gap-1.5 shadow-sm">
+          <i class="fa-solid fa-server"></i>
+          <span>Ficha Técnica</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Contenedor Principal -->
+  <div class="flex-1 flex max-w-7xl w-full mx-auto overflow-hidden p-3 md:p-4 gap-4">
+
+    <!-- Barra Lateral Izquierda (Sugerencias y Contexto Institucional) -->
+    <aside class="hidden lg:flex flex-col w-80 bg-white rounded-2xl shadow-sm border border-slate-200 p-4 justify-between overflow-y-auto">
+      <div>
+        <div class="flex items-center space-x-2 pb-3 border-b border-slate-100 mb-4">
+          <i class="fa-solid fa-compass text-uabc-green"></i>
+          <h2 class="text-sm font-bold text-slate-700 uppercase tracking-wide">Consultas Rápidas</h2>
+        </div>
+        <p class="text-xs text-slate-500 mb-3">Haz clic en cualquier ejemplo para consultar el acervo en lenguaje natural:</p>
+        
+        <div class="space-y-2">
+          <button onclick="sendQuickPrompt('¿Qué libros tienen sobre Inteligencia Artificial y Agentes?')" class="w-full text-left text-xs bg-slate-50 hover:bg-uabc-lightgreen hover:text-uabc-darkgreen hover:border-uabc-green text-slate-700 p-2.5 rounded-xl border border-slate-200 transition duration-150 flex items-start gap-2 group">
+            <i class="fa-solid fa-robot text-uabc-green mt-0.5 group-hover:scale-110 transition"></i>
+            <span>¿Qué libros tienen sobre Inteligencia Artificial y Agentes?</span>
+          </button>
+          <button onclick="sendQuickPrompt('Busco libros de metodología de la investigación para posgrado')" class="w-full text-left text-xs bg-slate-50 hover:bg-uabc-lightgreen hover:text-uabc-darkgreen hover:border-uabc-green text-slate-700 p-2.5 rounded-xl border border-slate-200 transition duration-150 flex items-start gap-2 group">
+            <i class="fa-solid fa-graduation-cap text-uabc-green mt-0.5 group-hover:scale-110 transition"></i>
+            <span>Libros de Metodología de la Investigación (Sampieri)</span>
+          </button>
+          <button onclick="sendQuickPrompt('¿Tienen libros de redes de computadoras de Tanenbaum?')" class="w-full text-left text-xs bg-slate-50 hover:bg-uabc-lightgreen hover:text-uabc-darkgreen hover:border-uabc-green text-slate-700 p-2.5 rounded-xl border border-slate-200 transition duration-150 flex items-start gap-2 group">
+            <i class="fa-solid fa-network-wired text-uabc-green mt-0.5 group-hover:scale-110 transition"></i>
+            <span>Redes de computadoras y protocolos (Tanenbaum)</span>
+          </button>
+          <button onclick="sendQuickPrompt('Libros sobre el Modelo SECI y gestión del conocimiento')" class="w-full text-left text-xs bg-slate-50 hover:bg-uabc-lightgreen hover:text-uabc-darkgreen hover:border-uabc-green text-slate-700 p-2.5 rounded-xl border border-slate-200 transition duration-150 flex items-start gap-2 group">
+            <i class="fa-solid fa-brain text-uabc-green mt-0.5 group-hover:scale-110 transition"></i>
+            <span>Gestión del Conocimiento y Modelo SECI (Nonaka)</span>
+          </button>
+          <button onclick="sendQuickPrompt('¿Cuál es el horario y requisitos de préstamo en Biblioteca Central?')" class="w-full text-left text-xs bg-slate-50 hover:bg-uabc-lightgreen hover:text-uabc-darkgreen hover:border-uabc-green text-slate-700 p-2.5 rounded-xl border border-slate-200 transition duration-150 flex items-start gap-2 group">
+            <i class="fa-solid fa-clock text-uabc-green mt-0.5 group-hover:scale-110 transition"></i>
+            <span>Horarios y reglamento de préstamo</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Tarjeta del Proyecto de Maestría -->
+      <div class="mt-4 p-3 bg-gradient-to-br from-uabc-lightgreen/60 to-emerald-50 rounded-xl border border-emerald-200">
+        <div class="flex items-center space-x-2 text-uabc-darkgreen font-semibold text-xs mb-1">
+          <i class="fa-solid fa-award"></i>
+          <span>Proyecto Terminal MTAO</span>
+        </div>
+        <p class="text-[11px] text-slate-600 leading-snug">
+          <strong>FCITEC - UABC</strong><br>
+          <em>"Implementación de un agente inteligente para la mejora de la búsqueda de información"</em>
+        </p>
+        <div class="mt-2 pt-2 border-t border-emerald-200/60 flex justify-between items-center text-[10px] text-slate-500">
+          <span>Fase 1.4: Prototipo Funcional</span>
+          <span class="bg-emerald-600 text-white font-bold px-1.5 py-0.5 rounded">v1.0 MVP</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Área de Chat Principal -->
+    <main class="flex-1 flex flex-col bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+      
+      <!-- Ventana de Mensajes -->
+      <div id="chatMessages" class="flex-1 p-4 md:p-6 overflow-y-auto space-y-4">
+        
+        <!-- Mensaje de Bienvenida del Bot -->
+        <div class="flex items-start space-x-3">
+          <div class="w-9 h-9 rounded-full bg-uabc-green text-white flex items-center justify-center flex-shrink-0 shadow">
+            <i class="fa-solid fa-robot text-sm"></i>
+          </div>
+          <div class="max-w-2xl bg-slate-50 border border-slate-200 rounded-2xl rounded-tl-none p-4 text-sm text-slate-800 shadow-sm">
+            <p class="font-semibold text-uabc-green mb-1 flex items-center gap-1.5">
+              <span>BiblioBot Cimarrón</span>
+              <span class="text-[10px] bg-green-100 text-uabc-green px-1.5 py-0.2 rounded font-normal">Asistente IA</span>
+            </p>
+            <p class="leading-relaxed">
+              ¡Hola! Soy tu asistente inteligente de la <strong>Biblioteca Central Campus Mexicali</strong>. 
+              Puedo ayudarte a localizar libros, tesis y manuales en el catálogo <strong>KOHA</strong>, verificar disponibilidad de ejemplares en sala y darte la signatura topográfica exacta para encontrarlos en estantería.
+            </p>
+            <div class="mt-3 flex flex-wrap gap-1.5">
+              <span class="text-xs text-slate-500 self-center mr-1">Prueba preguntar:</span>
+              <button onclick="sendQuickPrompt('¿Qué libros de Inteligencia Artificial tienen?')" class="text-xs bg-white hover:bg-uabc-lightgreen text-uabc-green border border-uabc-green/30 px-2.5 py-1 rounded-full transition">
+                Libros de Inteligencia Artificial
+              </button>
+              <button onclick="sendQuickPrompt('Busco libros de desarrollo web con C# y .NET')" class="text-xs bg-white hover:bg-uabc-lightgreen text-uabc-green border border-uabc-green/30 px-2.5 py-1 rounded-full transition">
+                C# y ASP.NET Core
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Barra de Carga / Indicador de Procesamiento -->
+      <div id="loadingIndicator" class="hidden px-6 py-2 bg-emerald-50/70 border-t border-emerald-100 text-xs text-uabc-darkgreen flex items-center space-x-2">
+        <i class="fa-solid fa-circle-notch fa-spin text-uabc-green"></i>
+        <span>Consultando el catálogo institucional KOHA y procesando respuesta...</span>
+      </div>
+
+      <!-- Barra de Entrada de Mensajes -->
+      <div class="p-3 md:p-4 bg-white border-t border-slate-200">
+        <form id="chatForm" onsubmit="handleFormSubmit(event)" class="flex items-center gap-2">
+          <div class="relative flex-1">
+            <input
+              type="text"
+              id="userInput"
+              placeholder="Escribe tu consulta en lenguaje natural (ej. '¿Tienen libros de redes de computadoras?')..."
+              class="w-full bg-slate-50 border border-slate-300 focus:border-uabc-green focus:ring-2 focus:ring-uabc-green/20 rounded-xl px-4 py-3 text-sm text-slate-800 outline-none transition"
+              autocomplete="off"
+            />
+          </div>
+          <button
+            type="submit"
+            id="sendBtn"
+            class="bg-uabc-green hover:bg-uabc-darkgreen text-white font-medium px-5 py-3 rounded-xl transition shadow flex items-center gap-2"
+          >
+            <span>Preguntar</span>
+            <i class="fa-solid fa-paper-plane text-xs"></i>
+          </button>
+        </form>
+        <div class="flex items-center justify-between mt-2 px-1 text-[11px] text-slate-400">
+          <span>Universidad Autónoma de Baja California • DIB Biblioteca Central</span>
+          <span class="flex items-center gap-1">
+            <i class="fa-solid fa-shield-halved text-emerald-500"></i>
+            Validación de Esquema KOHA REST v1
+          </span>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Modal de Ficha Técnica / Justificación Académica -->
+  <div id="techModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-xl w-full shadow-2xl border border-slate-200 overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+      <div class="bg-uabc-green text-white px-6 py-4 flex items-center justify-between">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-microchip text-uabc-gold"></i>
+          <h3 class="font-bold text-base">Ficha Técnica del Prototipo (Fase 1.4)</h3>
+        </div>
+        <button onclick="toggleModal('techModal')" class="text-white/80 hover:text-white text-lg">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      
+      <div class="p-6 space-y-4 text-xs text-slate-700 max-h-[75vh] overflow-y-auto">
+        <div class="bg-amber-50 border-l-4 border-amber-500 p-3 rounded-r-lg text-amber-900">
+          <p class="font-semibold mb-0.5">Alineación con Matriz de Riesgos (Diapositiva 16):</p>
+          <p>
+            En previsión del riesgo institucional (tiempo de aprobación y configuración de credenciales OAuth2 por el departamento de TI), este avance opera sobre un entorno <strong>Sandbox (Mock Fiel)</strong> que implementa exactamente el esquema JSON de la API REST oficial de KOHA (<code>/api/v1/biblios</code>).
+          </p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+            <span class="text-slate-400 block mb-1">Tecnología Backend:</span>
+            <span class="font-bold text-slate-800 text-sm">ASP.NET Core (.NET 10)</span>
+          </div>
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+            <span class="text-slate-400 block mb-1">Catálogo Destino:</span>
+            <span class="font-bold text-slate-800 text-sm">Biblioteca Central Mexicali</span>
+          </div>
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+            <span class="text-slate-400 block mb-1">Flujo de Autenticación:</span>
+            <span class="font-bold text-slate-800 text-sm">OAuth 2.0 (Client Credentials)</span>
+          </div>
+          <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-200">
+            <span class="text-emerald-700 block mb-1 font-semibold">Motor de Lenguaje (SLM):</span>
+            <span class="font-bold text-slate-800 text-sm">Qwen 2.5 (0.5B) Fine-Tuned</span>
+            <span class="text-[10px] text-slate-500 block">LoRA SFT • GGUF Q4_K_M en CPU (LLamaSharp)</span>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="font-bold text-slate-800 mb-1">Endpoints de Integración Implementados:</h4>
+          <ul class="space-y-1 font-mono text-[11px] bg-slate-900 text-emerald-400 p-3 rounded-xl overflow-x-auto">
+            <li>• POST /api/chat &rarr; Orquestador conversacional</li>
+            <li>• POST /api/catalog/search &rarr; Consulta directa catálogo Koha</li>
+            <li>• GET /api/status &rarr; Monitoreo de modo y registros indexados</li>
+            <li>• POST /api/v1/oauth/token &rarr; Soporte Client Credentials</li>
+          </ul>
+        </div>
+
+        <div class="pt-2 text-right">
+          <button onclick="toggleModal('techModal')" class="bg-uabc-green text-white px-4 py-2 rounded-xl text-xs font-semibold hover:bg-uabc-darkgreen transition">
+            Entendido
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts de Interacción -->
+  <script>
+    async function loadStatus() {
+      try {
+        const res = await fetch('/api/status');
+        const data = await res.json();
+        if (data) {
+          const badge = document.getElementById('modeText');
+          if (data.isLlmActive) {
+            badge.innerHTML = `<span class="text-amber-300 font-bold mr-1">🤖 Qwen 2.5 SLM Local</span> • ${escapeHtml(data.mode)}`;
+          } else {
+            badge.textContent = data.mode || 'En línea';
+          }
+        }
+      } catch (err) {
+        console.warn('Status check failed:', err);
+      }
+    }
+    loadStatus();
+
+    function toggleModal(id) {
+      const modal = document.getElementById(id);
+      modal.classList.toggle('hidden');
+    }
+
+    function sendQuickPrompt(text) {
+      document.getElementById('userInput').value = text;
+      document.getElementById('chatForm').dispatchEvent(new Event('submit'));
+    }
+
+    async function handleFormSubmit(e) {
+      e.preventDefault();
+      const input = document.getElementById('userInput');
+      const message = input.value.trim();
+      if (!message) return;
+
+      // 1. Mostrar mensaje del usuario
+      appendUserMessage(message);
+      input.value = '';
+
+      // 2. Mostrar loading
+      const loading = document.getElementById('loadingIndicator');
+      loading.classList.remove('hidden');
+
+      try {
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: message })
+        });
+
+        const data = await response.json();
+        loading.classList.add('hidden');
+
+        if (response.ok) {
+          appendBotResponse(data);
+        } else {
+          appendErrorMessage(data.error || 'Ocurrió un error al procesar tu consulta.');
+        }
+      } catch (err) {
+        loading.classList.add('hidden');
+        appendErrorMessage('No se pudo conectar con el servidor local del agente.');
+      }
+    }
+
+    function appendUserMessage(text) {
+      const chat = document.getElementById('chatMessages');
+      const div = document.createElement('div');
+      div.className = 'flex items-start justify-end space-x-3';
+      div.innerHTML = `
+        <div class="max-w-xl bg-uabc-green text-white rounded-2xl rounded-tr-none p-3.5 text-sm shadow-sm">
+          <p>${escapeHtml(text)}</p>
+        </div>
+        <div class="w-8 h-8 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center flex-shrink-0 font-semibold text-xs">
+          Tú
+        </div>
+      `;
+      chat.appendChild(div);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    function appendBotResponse(data) {
+      const chat = document.getElementById('chatMessages');
+      const div = document.createElement('div');
+      div.className = 'flex items-start space-x-3';
+
+      let booksHtml = '';
+      if (data.books && data.books.length > 0) {
+        booksHtml = `
+          <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3">
+            ${data.books.map(b => renderBookCard(b)).join('')}
+          </div>
+        `;
+      }
+
+      let followupsHtml = '';
+      if (data.suggestedQuestions && data.suggestedQuestions.length > 0) {
+        followupsHtml = `
+          <div class="mt-3 pt-3 border-t border-slate-200/80">
+            <span class="text-[11px] text-slate-500 block mb-1.5 font-medium">Sugerencias relacionadas:</span>
+            <div class="flex flex-wrap gap-1.5">
+              ${data.suggestedQuestions.map(q => `
+                <button onclick="sendQuickPrompt('${escapeHtml(q)}')" class="text-xs bg-white hover:bg-uabc-lightgreen text-uabc-green border border-uabc-green/30 px-2.5 py-1 rounded-lg transition text-left">
+                  ${escapeHtml(q)}
+                </button>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      div.innerHTML = `
+        <div class="w-9 h-9 rounded-full bg-uabc-green text-white flex items-center justify-center flex-shrink-0 shadow">
+          <i class="fa-solid fa-robot text-sm"></i>
+        </div>
+        <div class="max-w-2xl w-full bg-slate-50 border border-slate-200 rounded-2xl rounded-tl-none p-4 text-sm text-slate-800 shadow-sm">
+          <div class="flex items-center justify-between mb-2">
+            <span class="font-semibold text-uabc-green text-xs flex items-center gap-1">
+              <i class="fa-solid fa-check-double text-emerald-600"></i>
+              BiblioBot Cimarrón
+            </span>
+            ${data.detectedIntent ? `<span class="text-[10px] bg-slate-200/80 text-slate-600 px-2 py-0.5 rounded font-mono">${escapeHtml(data.detectedIntent)}</span>` : ''}
+          </div>
+
+          <div class="text-slate-800 leading-relaxed space-y-2 whitespace-pre-line text-[13px]">
+            ${formatMarkdown(data.reply)}
+          </div>
+
+          ${booksHtml}
+          ${followupsHtml}
+        </div>
+      `;
+
+      chat.appendChild(div);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    function renderBookCard(b) {
+      const isAvail = b.items && b.items.some(i => i.status.toLowerCase() === 'disponible');
+      const badgeClass = isAvail ? 'bg-emerald-100 text-emerald-800 border-emerald-300' : 'bg-amber-100 text-amber-800 border-amber-300';
+      const badgeText = isAvail ? '✓ Disponible' : '⚠ En Préstamo';
+      const firstItem = (b.items && b.items.length > 0) ? b.items[0] : null;
+
+      return `
+        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition flex flex-col justify-between">
+          <div>
+            <div class="flex items-start justify-between gap-2 mb-1.5">
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded border ${badgeClass}">
+                ${badgeText}
+              </span>
+              <span class="text-[10px] font-mono text-slate-400">ID #${b.biblio_id}</span>
+            </div>
+            <h4 class="font-bold text-slate-900 text-xs line-clamp-2 leading-snug mb-1" title="${escapeHtml(b.title)}">
+              ${escapeHtml(b.title)}
+            </h4>
+            <p class="text-[11px] text-slate-500 mb-1">
+              <i class="fa-solid fa-user-pen text-[10px] mr-1 text-slate-400"></i>${escapeHtml(b.author || 'Autor no registrado')}
+            </p>
+            ${b.abstract ? `<p class="text-[10px] text-slate-600 line-clamp-2 italic mb-2">${escapeHtml(b.abstract)}</p>` : ''}
+          </div>
+
+          <div class="mt-2 pt-2 border-t border-slate-100 text-[10px] space-y-1">
+            <div class="flex items-center justify-between text-slate-600">
+              <span>Clasificación:</span>
+              <span class="font-mono font-bold text-slate-800 bg-slate-100 px-1.5 py-0.5 rounded">${escapeHtml(b.call_number || (firstItem ? firstItem.item_call_number : 'S/C'))}</span>
+            </div>
+            ${firstItem ? `
+              <div class="text-slate-500 truncate" title="${escapeHtml(firstItem.location)}">
+                <i class="fa-solid fa-location-dot text-uabc-green mr-1"></i>${escapeHtml(firstItem.location)}
+              </div>
+            ` : ''}
+          </div>
+        </div>
+      `;
+    }
+
+    function appendErrorMessage(msg) {
+      const chat = document.getElementById('chatMessages');
+      const div = document.createElement('div');
+      div.className = 'flex items-start space-x-3';
+      div.innerHTML = `
+        <div class="w-9 h-9 rounded-full bg-red-600 text-white flex items-center justify-center flex-shrink-0 shadow">
+          <i class="fa-solid fa-triangle-exclamation text-sm"></i>
+        </div>
+        <div class="max-w-xl bg-red-50 border border-red-200 rounded-2xl rounded-tl-none p-3.5 text-xs text-red-700 shadow-sm">
+          <p class="font-semibold">Error al consultar el catálogo</p>
+          <p>${escapeHtml(msg)}</p>
+        </div>
+      `;
+      chat.appendChild(div);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    function formatMarkdown(text) {
+      if (!text) return '';
+      // Escape HTML first
+      let clean = escapeHtml(text);
+      // Bold
+      clean = clean.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+      // Italic
+      clean = clean.replace(/\*(.*?)\*/g, '<em>$1</em>');
+      // Inline code
+      clean = clean.replace(/`([^`]+)`/g, '<code class="bg-slate-200/70 text-slate-800 px-1 py-0.5 rounded font-mono text-[11px]">$1</code>');
+      return clean;
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+  </script>
+</body>
+</html>

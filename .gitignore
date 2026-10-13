@@ -1,0 +1,15 @@
+# Build artifacts y temporales de .NET
+bin/
+obj/
+.vs/
+*.user
+*.suo
+
+# Archivos pesados de modelos (superan el limite de 100MB de GitHub)
+models/*.gguf
+Models/*.gguf
+*.gguf
+
+# Presentaciones y logs locales
+*.pptx
+*.log

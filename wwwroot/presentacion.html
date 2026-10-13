@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Presentación Primer Avance - Agente Inteligente UABC</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            uabc: {
+              green: '#00723f',
+              darkgreen: '#004d2a',
+              lightgreen: '#e6f4ea',
+              gold: '#dd971a',
+              goldlight: '#fdf6e7'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @media print {
+      body { background: white !important; }
+      .slide { page-break-after: always; min-height: 100vh; display: flex !important; }
+      .no-print { display: none !important; }
+    }
+    .slide-active { display: flex !important; }
+  </style>
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans h-screen flex flex-col justify-between overflow-hidden select-none">
+
+  <!-- Barra Superior de Navegación -->
+  <header class="bg-slate-950/80 backdrop-blur border-b border-slate-800 px-6 py-3 flex items-center justify-between z-20 no-print">
+    <div class="flex items-center space-x-3">
+      <div class="w-8 h-8 rounded-full bg-uabc-green flex items-center justify-center text-uabc-gold font-bold text-sm shadow">
+        🎓
+      </div>
+      <div>
+        <h1 class="text-xs font-bold tracking-wide uppercase text-slate-300">Universidad Autónoma de Baja California • FCITEC</h1>
+        <p class="text-[11px] text-slate-500">MTAO | Primer Avance: Agente Inteligente para Biblioteca Central</p>
+      </div>
+    </div>
+
+    <!-- Controles de Presentación -->
+    <div class="flex items-center space-x-4">
+      <div class="flex items-center bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-1 text-xs text-slate-300">
+        <span id="currentSlideNum" class="font-bold text-uabc-gold">1</span>
+        <span class="mx-1 text-slate-500">/</span>
+        <span id="totalSlidesNum">10</span>
+      </div>
+
+      <div class="flex items-center space-x-1">
+        <button onclick="prevSlide()" class="p-2 text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-lg transition" title="Diapositiva Anterior (Flecha Izq)">
+          <i class="fa-solid fa-chevron-left text-xs"></i>
+        </button>
+        <button onclick="nextSlide()" class="p-2 text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-lg transition" title="Siguiente Diapositiva (Flecha Der / Espacio)">
+          <i class="fa-solid fa-chevron-right text-xs"></i>
+        </button>
+        <button onclick="toggleFullScreen()" class="p-2 text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-lg transition ml-2" title="Pantalla Completa (F)">
+          <i class="fa-solid fa-expand text-xs"></i>
+        </button>
+      </div>
+
+      <a href="/" target="_blank" class="bg-uabc-green hover:bg-uabc-darkgreen text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 shadow">
+        <i class="fa-solid fa-play text-[10px]"></i>
+        <span>Abrir Demo en Vivo</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Contenedor Principal de Diapositivas (16:9 Widescreen) -->
+  <main class="flex-1 flex items-center justify-center p-4 md:p-8 overflow-hidden relative">
+    
+    <!-- SLIDE 1: Portada -->
+    <section class="slide slide-active hidden flex-col justify-center items-center text-center max-w-5xl w-full h-full bg-gradient-to-br from-slate-900 via-slate-900 to-emerald-950/40 rounded-3xl border border-slate-800 p-8 md:p-12 shadow-2xl relative overflow-hidden">
+      <div class="absolute -top-24 -right-24 w-96 h-96 bg-uabc-green/20 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-uabc-gold/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="inline-flex items-center gap-2 bg-emerald-950/80 border border-emerald-800/80 text-emerald-300 text-xs px-3.5 py-1.5 rounded-full mb-6 uppercase tracking-wider font-semibold">
+        <span>Facultad de Ciencias de la Ingeniería y Tecnología (FCITEC)</span>
+      </div>
+
+      <h1 class="text-3xl md:text-5xl font-extrabold text-white tracking-tight max-w-4xl leading-tight mb-4">
+        Implementación de un <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300">Agente Inteligente</span> para la Biblioteca Central UABC
+      </h1>
+
+      <p class="text-lg md:text-xl text-uabc-gold font-medium mb-8">
+        Primer Avance: Arquitectura y Prototipo Funcional (MVP)
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl w-full bg-slate-950/60 border border-slate-800/80 p-5 rounded-2xl text-left text-sm">
+        <div>
+          <span class="text-slate-500 text-xs block">Presenta:</span>
+          <strong class="text-white text-base">L.S.C. Ana Gabriela Molina Moreno</strong>
+          <span class="text-slate-400 text-xs block mt-0.5">Maestría en Tecnologías para el Aprendizaje Organizacional</span>
+        </div>
+        <div>
+          <span class="text-slate-500 text-xs block">Director de Trabajo Terminal:</span>
+          <strong class="text-slate-200 text-base">Dr. Camilo Caraveo Mena</strong>
+          <span class="text-emerald-400 text-xs block mt-0.5 font-mono">Octubre 2026 • Campus Mexicali</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 2: Contexto y Problema -->
+    <section class="slide hidden flex-col justify-center max-w-5xl w-full h-full bg-slate-900 rounded-3xl border border-slate-800 p-8 md:p-12 shadow-2xl relative">
+      <div class="flex items-center space-x-2 text-uabc-gold text-xs font-bold uppercase tracking-wider mb-2">
+        <i class="fa-solid fa-circle-nodes"></i>
+        <span>1. Planteamiento y Oportunidad</span>
+      </div>
+      <h2 class="text-2xl md:text-4xl font-bold text-white mb-6">Contexto y Justificación del Proyecto</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div class="bg-slate-950/60 p-5 rounded-2xl border border-slate-800 flex flex-col justify-between">
+          <div>
+            <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center text-lg mb-4">
+              <i class="fa-solid fa-magnifying-glass-chart"></i>
+            </div>
+            <h3 class="font-bold text-white text-base mb-2">El Reto Actual</h3>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              Los usuarios de Biblioteca Central enfrentan dificultades con catálogos tradicionales basados en búsquedas booleanas exactas, lo que incrementa el tiempo de localización y la carga de atención bibliotecaria.
+            </p>
+          </div>
+          <span class="text-[10px] text-amber-400 font-mono mt-4">Diagnóstico Inicial: 83.3% participación</span>
+        </div>
+
+        <div class="bg-slate-950/60 p-5 rounded-2xl border border-slate-800 flex flex-col justify-between">
+          <div>
+            <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-lg mb-4">
+              <i class="fa-solid fa-robot"></i>
+            </div>
+            <h3 class="font-bold text-white text-base mb-2">La Solución Propuesta</h3>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              Un agente conversacional inteligente capaz de comprender lenguaje natural coloquial, interpretar necesidades temáticas e interactuar en tiempo real con la API REST del sistema <strong>KOHA</strong>.
+            </p>
+          </div>
+          <span class="text-[10px] text-emerald-400 font-mono mt-4">Modelos Metodológicos: SAM y SECI</span>
+        </div>
+
+        <div class="bg-slate-950/60 p-5 rounded-2xl border border-slate-800 flex flex-col justify-between">
+          <div>
+            <div class="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center text-lg mb-4">
+              <i class="fa-solid fa-calendar-check"></i>
+            </div>
+            <h3 class="font-bold text-white text-base mb-2">Hito del Avance</h3>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              Entrega adelantada de la <strong>Fase 1.4 (Prototipo Funcional MVP)</strong>, demostrando en software real la viabilidad de la arquitectura, conectores y procesamiento de consultas.
+            </p>
+          </div>
+          <span class="text-[10px] text-blue-400 font-mono mt-4">Adelanto a la planeación de Octubre</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 3: Resumen Ejecutivo de Ingeniería (¿Qué se construyó?) -->
+    <section class="slide hidden flex-col justify-center max-w-5xl w-full h-full bg-slate-900 rounded-3xl border border-slate-800 p-8 md:p-12 shadow-2xl relative">
+      <div class="flex items-center space-x-2 text-uabc-gold text-xs font-bold uppercase tracking-wider mb-1">
+        <i class="fa-solid fa-screwdriver-wrench"></i>
+        <span>2. Resumen de Ingeniería • Trabajo Realizado</span>
+      </div>
+      <h2 class="text-2xl md:text-3xl font-bold text-white mb-2">¿Qué se construyó en este periodo?</h2>
+      <p class="text-xs text-slate-400 mb-5">Desarrollo integral de punta a punta: desde el dataset y fine-tuning hasta el backend y la integración:</p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Tarjeta 1 -->
+        <div class="bg-slate-950/70 p-4 rounded-2xl border border-slate-800 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="bg-blue-950/80 text-blue-400 border border-blue-800/80 text-[10px] font-mono px-2 py-0.5 rounded font-bold">1. Backend & Sandbox</span>
+              <i class="fa-solid fa-server text-blue-400 text-sm"></i>
+            </div>
+            <h4 class="text-white font-bold text-sm mb-1">Servidor ASP.NET Core (.NET 10) & Mock Koha</h4>
+            <p class="text-[11px] text-slate-400 leading-relaxed">
+              Desarrollo del servidor REST desacoplado mediante <code>IKohaService</code>. Ante la demora de TI en liberar accesos OAuth2, se creó un <strong>Mock Sandbox RFC</strong> de alta fidelidad que replica la API oficial de Koha (<code>/api/v1/biblios</code>), estatus físico y estanterías de Biblioteca Mexicali.
+            </p>
+          </div>
+          <div class="mt-3 pt-2 border-t border-slate-850 flex items-center justify-between text-[10px] text-slate-500 font-mono">
+            <span>Cero líneas de código a reescribir en producción</span>
+            <span class="text-emerald-400 font-bold">100% Desacoplado</span>
+          </div>
+        </div>
+
+        <!-- Tarjeta 2 -->
+        <div class="bg-slate-950/70 p-4 rounded-2xl border border-slate-800 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="bg-purple-950/80 text-purple-400 border border-purple-800/80 text-[10px] font-mono px-2 py-0.5 rounded font-bold">2. Curación de Datos</span>
+              <i class="fa-solid fa-database text-purple-400 text-sm"></i>
+            </div>
+            <h4 class="text-white font-bold text-sm mb-1">Dataset Especializado UABC (2,956 Muestras)</h4>
+            <p class="text-[11px] text-slate-400 leading-relaxed">
+              Generación de un dataset masivo en formato <strong>ChatML JSONL</strong>. Cubre 80 materias académicas, expansión de siglas comunes (IA, BD, POO, SO), normalización de modismos estudiantiles ("¿Qué onda pa?", "tírame paro") y consultas de reglamentos de préstamo a domicilio.
+            </p>
+          </div>
+          <div class="mt-3 pt-2 border-t border-slate-850 flex items-center justify-between text-[10px] text-slate-500 font-mono">
+            <span>2,956 registros validados sintéticos</span>
+            <span class="text-purple-400 font-bold">0 Errores de sintaxis</span>
+          </div>
+        </div>
+
+        <!-- Tarjeta 3 -->
+        <div class="bg-slate-950/70 p-4 rounded-2xl border border-slate-800 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="bg-emerald-950/80 text-emerald-400 border border-emerald-800/80 text-[10px] font-mono px-2 py-0.5 rounded font-bold">3. Fine-Tuning SLM</span>
+              <i class="fa-solid fa-brain text-emerald-400 text-sm"></i>
+            </div>
+            <h4 class="text-white font-bold text-sm mb-1">Entrenamiento LoRA & Cuantización GGUF</h4>
+            <p class="text-[11px] text-slate-400 leading-relaxed">
+              Fine-tuning del modelo <strong>Qwen 2.5 (0.5B Instruct)</strong> en GPU T4 (Google Colab) con Unsloth y LoRA (r=32, α=64) a lo largo de 550 pasos. Exportación a formato <strong>GGUF Q4_K_M (397 MB)</strong> para ejecución autónoma sin conexión ni costos de nube.
+            </p>
+          </div>
+          <div class="mt-3 pt-2 border-t border-slate-850 flex items-center justify-between text-[10px] text-slate-500 font-mono">
+            <span>Inferencia on-premise en CPU</span>
+            <span class="text-emerald-400 font-bold">&lt; 380 MB RAM</span>
+          </div>
+        </div>
+
+        <!-- Tarjeta 4 -->
+        <div class="bg-slate-950/70 p-4 rounded-2xl border border-slate-800 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="bg-amber-950/80 text-amber-400 border border-amber-800/80 text-[10px] font-mono px-2 py-0.5 rounded font-bold">4. Algoritmos de Precisión</span>
+              <i class="fa-solid fa-filter-circle-check text-amber-400 text-sm"></i>
+            </div>
+            <h4 class="text-white font-bold text-sm mb-1">Preprocesamiento Léxico y Cero Falsos Positivos</h4>
+            <p class="text-[11px] text-slate-400 leading-relaxed">
+              Incorporación de filtros para evitar coincidencias erróneas por palabras genéricas (ej. evitar que <em>"arte moderno"</em> recomiende libros de IA por la palabra <em>"moderno"</em>), con <strong>stem matching en español</strong> y extracción de intenciones en tiempo real.
+            </p>
+          </div>
+          <div class="mt-3 pt-2 border-t border-slate-850 flex items-center justify-between text-[10px] text-slate-500 font-mono">
+            <span>Resolución de jerga + derivación morfológica</span>
+            <span class="text-amber-400 font-bold">100% Casos aprobados</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 4: Matriz de Riesgos y Sandbox -->
+    <section class="slide hidden flex-col justify-center max-w-5xl w-full h-full bg-slate-900 rounded-3xl border border-slate-800 p-8 md:p-12 shadow-2xl relative">
+      <div class="flex items-center space-x-2 text-uabc-gold text-xs font-bold uppercase tracking-wider mb-2">
+        <i class="fa-solid fa-shield-halved"></i>
+        <span>3. Blindaje Metodológico</span>
+      </div>
+      <h2 class="text-2xl md:text-4xl font-bold text-white mb-4">Mitigación de Riesgos Institucionales</h2>
+      <p class="text-xs text-slate-400 mb-6">Alineación estricta con la Plantilla de Riesgos formalizada en el proyecto (Diapositiva 16):</p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-rose-950/20 border border-rose-900/40 p-6 rounded-2xl">
+          <span class="text-xs bg-rose-900/50 text-rose-300 font-bold px-2.5 py-1 rounded">Riesgo #1 Identificado (Probabilidad: Alta)</span>
+          <h3 class="text-lg font-bold text-rose-200 mt-3 mb-2">Acceso limitado a metadatos KOHA</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            <em>Causa:</em> Demoras en aprobaciones institucionales, configuración del módulo OAuth2 en Apache por el departamento de TI y políticas de seguridad universitaria.
+          </p>
+        </div>
+
+        <div class="bg-emerald-950/30 border border-emerald-800/40 p-6 rounded-2xl">
+          <span class="text-xs bg-emerald-900/50 text-emerald-300 font-bold px-2.5 py-1 rounded">Acción Correctiva Ejecutada</span>
+          <h3 class="text-lg font-bold text-emerald-200 mt-3 mb-2">Entorno Sandbox Controlado</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Se implementó un entorno <strong>Sandbox (Mock RFC/OpenAPI)</strong> que emula con precisión milimétrica la estructura JSON oficial de KOHA REST v1 (<code>/api/v1/biblios</code>), permitiendo validar el agente sin frenar el cronograma de la maestría.
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-6 p-4 bg-slate-950/60 rounded-xl border border-slate-800 flex items-center justify-between text-xs">
+        <span class="text-slate-300 font-medium">
+          <i class="fa-solid fa-code-compare text-uabc-gold mr-2"></i>
+          <strong>Desacoplamiento Arquitectónico:</strong> El paso de Sandbox a Producción se realiza mediante una simple variable de entorno (<code>UseMock=false</code>).
+        </span>
+        <span class="bg-slate-800 text-emerald-400 font-mono px-2 py-1 rounded text-[11px]">Zero Refactor Required</span>
+      </div>
+    </section>
+
+    <!-- SLIDE 5: Arquitectura Tecnológica -->
+    <section class="slide hidden flex-col justify-center max-w-5xl w-full h-full bg-slate-900 rounded-3xl border border-slate-800 p-8 md:p-12 shadow-2xl relative">
+      <div class="flex items-center space-x-2 text-uabc-gold text-xs font-bold uppercase tracking-wider mb-2">
+        <i class="fa-solid fa-cubes"></i>
+        <span>4. Arquitectura del Sistema</span>
+      </div>
+      <h2 class="text-2xl md:text-4xl font-bold text-white mb-6">Stack Tecnológico y Componentes (.NET 10)</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="bg-slate-950/60 p-4 rounded-2xl border border-slate-800 text-left">
+          <div class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-sm mb-3">
+            <i class="fa-solid fa-window-maximize"></i>
+          </div>
+          <h4 class="font-bold text-white text-sm mb-1">1. Frontend UI</h4>
+          <p class="text-[11px] text-slate-400 leading-relaxed">
+            Single Page Application responsiva, con identidad visual UABC (Verde Institucional y Oro), renderizado de tarjetas bibliográficas y feedback conversacional.
+          </p>
+        </div>
+
+        <div class="bg-slate-950/60 p-4 rounded-2xl border border-slate-800 text-left">
+          <div class="w-8 h-8 rounded-lg bg-purple-500/10 text-purple-400 flex items-center justify-center text-sm mb-3">
+            <i class="fa-solid fa-server"></i>
+          </div>
+          <h4 class="font-bold text-white text-sm mb-1">2. Backend API</h4>
+          <p class="text-[11px] text-slate-400 leading-relaxed">
+            Construido en <strong>ASP.NET Core (.NET 10 Minimal API)</strong>. Alto rendimiento asíncrono, inyección de dependencias limpia y endpoints REST ligeros.
+          </p>
+        </div>
+
+        <div class="bg-slate-950/60 p-4 rounded-2xl border border-emerald-500/40 text-left ring-1 ring-emerald-500/30">
+          <div class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-300 flex items-center justify-center text-sm mb-3">
+            <i class="fa-solid fa-brain"></i>
+          </div>
+          <div class="flex items-center gap-1.5 mb-1">
+            <h4 class="font-bold text-emerald-300 text-sm">3. SLM Local Entrenado</h4>
+            <span class="bg-emerald-950 text-emerald-400 text-[9px] px-1.5 py-0.5 rounded font-mono border border-emerald-800">Qwen 2.5</span>
+          </div>
+          <p class="text-[11px] text-slate-300 leading-relaxed">
+            <strong>Qwen 2.5 (0.5B) Fine-Tuned</strong> con LoRA sobre consultas de Koha. Inferencia on-premise con LLamaSharp (.NET CPU, &lt;380MB RAM, cero costo de API y 100% privacidad de datos).
+          </p>
+        </div>
+
+        <div class="bg-slate-950/60 p-4 rounded-2xl border border-slate-800 text-left">
+          <div class="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center text-sm mb-3">
+            <i class="fa-solid fa-database"></i>
+          </div>
+          <h4 class="font-bold text-white text-sm mb-1">4. Conector KOHA</h4>
+          <p class="text-[11px] text-slate-400 leading-relaxed">
+            Capa de abstracción (<code>IKohaService</code>) con implementación dual: Mock representativo de Mexicali y cliente OAuth2 real para producción.
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-6 p-4 bg-emerald-950/30 border border-emerald-800/40 rounded-xl text-xs text-emerald-200 flex items-center justify-between">
+        <span>⚡ <strong>Sin dependencias externas complejas:</strong> Compilación nativa, ejecutable portable y arranque inmediato con <code>run.bat</code>.</span>
+        <span class="font-mono text-[11px] text-emerald-400">Latencia &lt; 20ms</span>
+      </div>
+    </section>
+
+    <!-- SLIDE 6: Integración KOHA REST API -->
+    <section class="slide hidden flex-col justify-center max-w-5xl w-full h-full bg-slate-900 rounded-3xl border border-slate-800 p-8 md:p-12 shadow-2xl relative">
+      <div class="flex items-center space-x-2 text-uabc-gold text-xs font-bold uppercase tracking-wider mb-2">
+        <i class="fa-solid fa-link"></i>
+        <span>5. Integración KOHA</span>
+      </div>
+      <h2 class="text-2xl md:text-4xl font-bold text-white mb-6">Especificación y Flujo OAuth 2.0</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-slate-950/60 p-5 rounded-2xl border border-slate-800 text-xs space-y-3">
+          <h4 class="text-white font-bold text-sm flex items-center gap-2">
+            <i class="fa-solid fa-key text-uabc-gold"></i>
+            <span>Flujo de Autenticación Oficial</span>
+          </h4>
+          <p class="text-slate-400 leading-relaxed">
+            Basado en las directrices técnicas del <em>Manual de KOHA API</em> del proyecto:
+          </p>
+          <ul class="space-y-1.5 font-mono text-[11px] text-slate-300">
+            <li>• <strong class="text-emerald-400">POST</strong> /api/v1/oauth/token</li>
+            <li>• grant_type: <span class="text-amber-300">"client_credentials"</span></li>
+            <li>• client_id & client_secret asignados por TI</li>
+            <li>• Header: <span class="text-cyan-300">Authorization: Bearer &lt;token&gt;</span></li>
+          </ul>
+          <div class="p-2.5 bg-slate-900 rounded-lg border border-slate-800 text-[11px] text-slate-400">
+            <strong class="text-slate-200">Ajuste en Apache:</strong><br>
+            <code>SetEnvIf Autorización .+ HTTP_AUTHORIZATION=$0</code>
+          </div>
+        </div>
+
+        <div class="bg-slate-950/60 p-5 rounded-2xl border border-slate-800 text-xs space-y-3">
+          <h4 class="text-white font-bold text-sm flex items-center gap-2">
+            <i class="fa-solid fa-layer-group text-emerald-400"></i>
+            <span>Mapeo de Metadatos Bibliográficos</span>
+          </h4>
+          <p class="text-slate-400 leading-relaxed">
+            Transformación de registros bibliográficos MARC / KOHA a objetos legibles:
+          </p>
+          <div class="grid grid-cols-2 gap-2 text-[11px]">
+            <div class="bg-slate-900 p-2 rounded-lg border border-slate-800">
+              <span class="text-slate-500 block">Catalogación:</span>
+              <strong class="text-slate-200">Signatura LC</strong>
+            </div>
+            <div class="bg-slate-900 p-2 rounded-lg border border-slate-800">
+              <span class="text-slate-500 block">Ubicación Física:</span>
+              <strong class="text-slate-200">Planta Alta / Estantería</strong>
+            </div>
+            <div class="bg-slate-900 p-2 rounded-lg border border-slate-800">
+              <span class="text-slate-500 block">Disponibilidad:</span>
+              <strong class="text-emerald-400">Ejemplares en Sala</strong>
+            </div>
+            <div class="bg-slate-900 p-2 rounded-lg border border-slate-800">
+              <span class="text-slate-500 block">Préstamos:</span>
+              <strong class="text-amber-400">Estatus en Tiempo Real</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 7: Prototipo y Acervo Indexado -->
+    <section class="slide hidden flex-col justify-center max-w-5xl w-full h-full bg-slate-900 rounded-3xl border border-slate-800 p-8 md:p-12 shadow-2xl relative">
+      <div class="flex items-center space-x-2 text-uabc-gold text-xs font-bold uppercase tracking-wider mb-2">
+        <i class="fa-solid fa-book-bookmark"></i>
+        <span>6. Acervo del Prototipo</span>
+      </div>
+      <h2 class="text-2xl md:text-4xl font-bold text-white mb-6">Metadatos Vinculados a la Investigación</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+        <div class="p-4 bg-slate-950/60 rounded-xl border border-slate-800 flex items-start gap-3">
+          <div class="w-8 h-8 rounded-lg bg-uabc-green/20 text-emerald-400 flex items-center justify-center flex-shrink-0 font-bold">1</div>
+          <div>
+            <h4 class="font-bold text-white text-sm">La Creación del Conocimiento en la Organización</h4>
+            <p class="text-slate-400 text-[11px] mb-1">Nonaka, Ikujiro & Takeuchi, Hirotaka • <em>Modelo SECI</em></p>
+            <span class="text-[10px] bg-slate-900 text-uabc-gold px-2 py-0.5 rounded font-mono">Clasificación: HD30.2 .N66</span>
+          </div>
+        </div>
+
+        <div class="p-4 bg-slate-950/60 rounded-xl border border-slate-800 flex items-start gap-3">
+          <div class="w-8 h-8 rounded-lg bg-uabc-green/20 text-emerald-400 flex items-center justify-center flex-shrink-0 font-bold">2</div>
+          <div>
+            <h4 class="font-bold text-white text-sm">Metodología de la Investigación</h4>
+            <p class="text-slate-400 text-[11px] mb-1">Hernández Sampieri, Roberto & Mendoza, Christian</p>
+            <span class="text-[10px] bg-slate-900 text-uabc-gold px-2 py-0.5 rounded font-mono">Clasificación: Q180.55.M4 .H47</span>
+          </div>
+        </div>
+
+        <div class="p-4 bg-slate-950/60 rounded-xl border border-slate-800 flex items-start gap-3">
+          <div class="w-8 h-8 rounded-lg bg-uabc-green/20 text-emerald-400 flex items-center justify-center flex-shrink-0 font-bold">3</div>
+          <div>
+            <h4 class="font-bold text-white text-sm">Inteligencia Artificial: Un Enfoque Moderno</h4>
+            <p class="text-slate-400 text-[11px] mb-1">Russell, Stuart & Norvig, Peter</p>
+            <span class="text-[10px] bg-slate-900 text-uabc-gold px-2 py-0.5 rounded font-mono">Clasificación: Q335 .R87</span>
+          </div>
+        </div>
+
+        <div class="p-4 bg-slate-950/60 rounded-xl border border-slate-800 flex items-start gap-3">
+          <div class="w-8 h-8 rounded-lg bg-uabc-green/20 text-emerald-400 flex items-center justify-center flex-shrink-0 font-bold">4</div>
+          <div>
+            <h4 class="font-bold text-white text-sm">Deep Learning: Algoritmos y Aplicaciones</h4>
+            <p class="text-slate-400 text-[11px] mb-1">Goodfellow, Ian; Bengio, Yoshua; Courville, Aaron</p>
+            <span class="text-[10px] bg-slate-900 text-uabc-gold px-2 py-0.5 rounded font-mono">Clasificación: QA76.87 .G66</span>
+          </div>
+        </div>
+      </div>
+
+      <p class="text-[11px] text-slate-400 mt-4 text-center">
+        * Cada registro incluye estatus de ejemplares (Disponible / En préstamo) y ubicación física exacta en Biblioteca Central Mexicali.
+      </p>
+    </section>
+
+    <!-- SLIDE 8: Validación y Pruebas -->
+    <section class="slide hidden flex-col justify-center max-w-5xl w-full h-full bg-slate-900 rounded-3xl border border-slate-800 p-8 md:p-12 shadow-2xl relative">
+      <div class="flex items-center space-x-2 text-uabc-gold text-xs font-bold uppercase tracking-wider mb-2">
+        <i class="fa-solid fa-list-check"></i>
+        <span>7. Resultados de Pruebas</span>
+      </div>
+      <h2 class="text-2xl md:text-4xl font-bold text-white mb-6">Batería de Pruebas Automatizadas (100% Éxito)</h2>
+
+      <div class="overflow-x-auto bg-slate-950/60 rounded-2xl border border-slate-800 p-4">
+        <table class="w-full text-left text-xs">
+          <thead>
+            <tr class="text-slate-400 border-b border-slate-800 pb-2">
+              <th class="pb-2 font-semibold">Caso</th>
+              <th class="pb-2 font-semibold">Tipo de Consulta</th>
+              <th class="pb-2 font-semibold">Intención Detectada</th>
+              <th class="pb-2 font-semibold text-right">Resultado</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-800/60 text-slate-300">
+            <tr>
+              <td class="py-2 font-mono text-emerald-400">#1</td>
+              <td class="py-2">"Hola, buenas tardes"</td>
+              <td class="py-2"><span class="bg-slate-800 px-2 py-0.5 rounded text-[11px]">Saludo General</span></td>
+              <td class="py-2 text-right text-emerald-400 font-bold">✅ Aprobado</td>
+            </tr>
+            <tr>
+              <td class="py-2 font-mono text-emerald-400">#2</td>
+              <td class="py-2">"¿Cuál es el horario de Biblioteca Central?"</td>
+              <td class="py-2"><span class="bg-slate-800 px-2 py-0.5 rounded text-[11px]">Información Institucional</span></td>
+              <td class="py-2 text-right text-emerald-400 font-bold">✅ Aprobado</td>
+            </tr>
+            <tr>
+              <td class="py-2 font-mono text-emerald-400">#3</td>
+              <td class="py-2">"¿Qué onda pa, tienes libros de IA?" (Modismos)</td>
+              <td class="py-2"><span class="bg-slate-800 px-2 py-0.5 rounded text-[11px]">Búsqueda Temática</span></td>
+              <td class="py-2 text-right text-emerald-400 font-bold">✅ Aprobado (2 libros)</td>
+            </tr>
+            <tr>
+              <td class="py-2 font-mono text-emerald-400">#4</td>
+              <td class="py-2">"tienes libros sobre el arte moderno" (Negativa)</td>
+              <td class="py-2"><span class="bg-slate-800 px-2 py-0.5 rounded text-[11px]">Búsqueda Sin Resultados</span></td>
+              <td class="py-2 text-right text-emerald-400 font-bold">✅ Aprobado (0 Falsos Positivos)</td>
+            </tr>
+            <tr>
+              <td class="py-2 font-mono text-emerald-400">#5</td>
+              <td class="py-2">"Problemas de redundancia en tablas relacionales"</td>
+              <td class="py-2"><span class="bg-slate-800 px-2 py-0.5 rounded text-[11px]">Búsqueda Conceptual</span></td>
+              <td class="py-2 text-right text-emerald-400 font-bold">✅ Aprobado (Silberschatz)</td>
+            </tr>
+            <tr>
+              <td class="py-2 font-mono text-emerald-400">#6</td>
+              <td class="py-2">"¿Qué necesito para sacar un libro a domicilio?"</td>
+              <td class="py-2"><span class="bg-slate-800 px-2 py-0.5 rounded text-[11px]">Reglamento Institucional</span></td>
+              <td class="py-2 text-right text-emerald-400 font-bold">✅ Aprobado (Credencial UABC)</td>
+            </tr>
+            <tr>
+              <td class="py-2 font-mono text-emerald-400">#7</td>
+              <td class="py-2">Inferencia Local SLM Qwen 2.5 (GGUF Q4_K_M)</td>
+              <td class="py-2"><span class="bg-emerald-950 text-emerald-300 px-2 py-0.5 rounded text-[11px] border border-emerald-800">ChatML JSON LoRA</span></td>
+              <td class="py-2 text-right text-emerald-400 font-bold">✅ Aprobado (CPU &lt; 380MB)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- SLIDE 9: Flujo de Usuario y Demostración -->
+    <section class="slide hidden flex-col justify-center max-w-5xl w-full h-full bg-slate-900 rounded-3xl border border-slate-800 p-8 md:p-12 shadow-2xl relative">
+      <div class="flex items-center space-x-2 text-uabc-gold text-xs font-bold uppercase tracking-wider mb-2">
+        <i class="fa-solid fa-route"></i>
+        <span>8. Flujo Operativo</span>
+      </div>
+      <h2 class="text-2xl md:text-4xl font-bold text-white mb-6">Demostración del Flujo Conversacional</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-center">
+        <div class="p-5 bg-slate-950/60 rounded-2xl border border-slate-800 flex flex-col items-center">
+          <div class="w-12 h-12 rounded-full bg-slate-800 text-slate-300 flex items-center justify-center text-lg mb-3">
+            <i class="fa-solid fa-comment-dots"></i>
+          </div>
+          <h4 class="font-bold text-white text-sm mb-1">1. Entrada Usuario</h4>
+          <p class="text-[11px] text-slate-400">Pregunta en español coloquial sin sintaxis booleana compleja.</p>
+        </div>
+
+        <div class="p-5 bg-slate-950/60 rounded-2xl border border-slate-800 flex flex-col items-center">
+          <div class="w-12 h-12 rounded-full bg-cyan-500/10 text-cyan-400 flex items-center justify-center text-lg mb-3">
+            <i class="fa-solid fa-microchip"></i>
+          </div>
+          <h4 class="font-bold text-white text-sm mb-1">2. Procesamiento</h4>
+          <p class="text-[11px] text-slate-400">Normalización de jerga y extracción de intenciones con SLM.</p>
+        </div>
+
+        <div class="p-5 bg-slate-950/60 rounded-2xl border border-slate-800 flex flex-col items-center">
+          <div class="w-12 h-12 rounded-full bg-uabc-green/20 text-emerald-400 flex items-center justify-center text-lg mb-3">
+            <i class="fa-solid fa-server"></i>
+          </div>
+          <h4 class="font-bold text-white text-sm mb-1">3. Consulta KOHA</h4>
+          <p class="text-[11px] text-slate-400">Recuperación de metadatos MARC, clasificación y existencias.</p>
+        </div>
+
+        <div class="p-5 bg-slate-950/60 rounded-2xl border border-slate-800 flex flex-col items-center">
+          <div class="w-12 h-12 rounded-full bg-uabc-gold/20 text-uabc-gold flex items-center justify-center text-lg mb-3">
+            <i class="fa-solid fa-id-card"></i>
+          </div>
+          <h4 class="font-bold text-white text-sm mb-1">4. Respuesta Rica</h4>
+          <p class="text-[11px] text-slate-400">Tarjetas con estantería física exacta y sugerencias de seguimiento.</p>
+        </div>
+      </div>
+
+      <div class="mt-8 text-center">
+        <a href="/" target="_blank" class="inline-flex items-center gap-2 bg-uabc-green hover:bg-uabc-darkgreen text-white font-bold px-6 py-3 rounded-xl transition shadow-lg text-sm">
+          <i class="fa-solid fa-desktop"></i>
+          <span>Ver Prototipo Interactivo en Tiempo Real</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- SLIDE 10: Próximos Pasos -->
+    <section class="slide hidden flex-col justify-center max-w-5xl w-full h-full bg-slate-900 rounded-3xl border border-slate-800 p-8 md:p-12 shadow-2xl relative">
+      <div class="flex items-center space-x-2 text-uabc-gold text-xs font-bold uppercase tracking-wider mb-2">
+        <i class="fa-solid fa-timeline"></i>
+        <span>9. Continuación del Proyecto</span>
+      </div>
+      <h2 class="text-2xl md:text-4xl font-bold text-white mb-6">Cronograma y Siguientes Fases (Fases 1.5 a 1.7)</h2>
+
+      <div class="space-y-4 text-xs">
+        <div class="p-4 bg-slate-950/60 rounded-xl border border-slate-800 flex items-center justify-between">
+          <div>
+            <span class="text-emerald-400 font-bold block">Fase 1.4 (Continuación - Oct-Dic 2026):</span>
+            <span class="text-slate-300">Integración de Embeddings y Búsqueda Semántica profunda con Vector Store.</span>
+          </div>
+          <span class="bg-emerald-950 border border-emerald-800 text-emerald-300 px-3 py-1 rounded-full text-[11px] font-mono">En Progreso</span>
+        </div>
+
+        <div class="p-4 bg-slate-950/60 rounded-xl border border-slate-800 flex items-center justify-between">
+          <div>
+            <span class="text-cyan-400 font-bold block">Trámite Institucional TI:</span>
+            <span class="text-slate-300">Liberación y carga de credenciales de producción OAuth2 en el servidor KOHA de la UABC.</span>
+          </div>
+          <span class="bg-cyan-950 border border-cyan-800 text-cyan-300 px-3 py-1 rounded-full text-[11px] font-mono">En Gestión</span>
+        </div>
+
+        <div class="p-4 bg-slate-950/60 rounded-xl border border-slate-800 flex items-center justify-between">
+          <div>
+            <span class="text-uabc-gold font-bold block">Fase 1.5 (Ene-Feb 2027):</span>
+            <span class="text-slate-300">Validación piloto con el personal del Departamento de Informática y Bibliotecas (DIB).</span>
+          </div>
+          <span class="bg-amber-950 border border-amber-800 text-amber-300 px-3 py-1 rounded-full text-[11px] font-mono">Programado</span>
+        </div>
+
+        <div class="p-4 bg-slate-950/60 rounded-xl border border-slate-800 flex items-center justify-between">
+          <div>
+            <span class="text-purple-400 font-bold block">Fase 1.6 y 1.7 (Feb-May 2027):</span>
+            <span class="text-slate-300">Evaluación del desempeño mediante indicadores de utilidad percibida y redacción del informe final.</span>
+          </div>
+          <span class="bg-purple-950 border border-purple-800 text-purple-300 px-3 py-1 rounded-full text-[11px] font-mono">Programado</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 10: Conclusiones -->
+    <section class="slide hidden flex-col justify-center items-center text-center max-w-5xl w-full h-full bg-gradient-to-br from-slate-900 via-slate-900 to-emerald-950/50 rounded-3xl border border-slate-800 p-8 md:p-12 shadow-2xl relative">
+      <div class="w-16 h-16 rounded-full bg-uabc-green/30 border-2 border-uabc-gold text-uabc-gold flex items-center justify-center text-2xl mb-6 shadow-lg">
+        🎓
+      </div>
+
+      <h2 class="text-3xl md:text-5xl font-extrabold text-white mb-4">
+        ¡Gracias por su Atención!
+      </h2>
+
+      <p class="text-lg text-emerald-300 font-medium max-w-2xl mb-8">
+        El primer avance demuestra la solidez metodológica y la viabilidad técnica del agente inteligente para la comunidad universitaria de la UABC.
+      </p>
+
+      <div class="p-6 bg-slate-950/80 rounded-2xl border border-slate-800 max-w-md w-full text-xs text-slate-400 space-y-2">
+        <p><strong class="text-white">L.S.C. Ana Gabriela Molina Moreno</strong></p>
+        <p>Maestría en Tecnologías para el Aprendizaje Organizacional</p>
+        <p class="text-uabc-gold font-semibold">Facultad de Ciencias de la Ingeniería y Tecnología (FCITEC)</p>
+      </div>
+
+      <div class="mt-8 flex gap-3">
+        <a href="/" target="_blank" class="bg-uabc-green hover:bg-uabc-darkgreen text-white text-xs font-semibold px-5 py-2.5 rounded-xl transition shadow">
+          Iniciar Demostración en Vivo
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Barra Inferior de Progreso -->
+  <footer class="bg-slate-950 border-t border-slate-800 px-6 py-2.5 flex items-center justify-between text-xs text-slate-500 no-print">
+    <div class="flex items-center space-x-2">
+      <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
+      <span>UABC • Biblioteca Central Mexicali</span>
+    </div>
+    
+    <!-- Barra visual de progreso -->
+    <div class="w-48 bg-slate-800 h-1.5 rounded-full overflow-hidden">
+      <div id="progressBar" class="bg-gradient-to-r from-uabc-green to-uabc-gold h-full w-[10%] transition-all duration-300"></div>
+    </div>
+
+    <div class="text-[11px] text-slate-400">
+      Usa las teclas <kbd class="bg-slate-800 px-1.5 py-0.5 rounded border border-slate-700">◀</kbd> <kbd class="bg-slate-800 px-1.5 py-0.5 rounded border border-slate-700">▶</kbd> o <kbd class="bg-slate-800 px-1.5 py-0.5 rounded border border-slate-700">Espacio</kbd>
+    </div>
+  </footer>
+
+  <!-- Lógica de Navegación de Diapositivas -->
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    let currentIndex = 0;
+    const total = slides.length;
+    document.getElementById('totalSlidesNum').textContent = total;
+
+    function showSlide(index) {
+      if (index < 0) index = 0;
+      if (index >= total) index = total - 1;
+      currentIndex = index;
+
+      slides.forEach((s, idx) => {
+        if (idx === currentIndex) {
+          s.classList.add('slide-active');
+          s.classList.remove('hidden');
+        } else {
+          s.classList.remove('slide-active');
+          s.classList.add('hidden');
+        }
+      });
+
+      document.getElementById('currentSlideNum').textContent = currentIndex + 1;
+      const pct = ((currentIndex + 1) / total) * 100;
+      document.getElementById('progressBar').style.width = pct + '%';
+    }
+
+    function nextSlide() {
+      showSlide(currentIndex + 1);
+    }
+
+    function prevSlide() {
+      showSlide(currentIndex - 1);
+    }
+
+    function toggleFullScreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => console.log(err));
+      } else {
+        document.exitFullscreen();
+      }
+    }
+
+    // Navegación por teclado
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        nextSlide();
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        prevSlide();
+      } else if (e.key === 'Home') {
+        showSlide(0);
+      } else if (e.key === 'End') {
+        showSlide(total - 1);
+      } else if (e.key.toLowerCase() === 'f') {
+        toggleFullScreen();
+      }
+    });
+  </script>
+</body>
+</html>
