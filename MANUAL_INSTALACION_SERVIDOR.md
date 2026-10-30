@@ -1,7 +1,7 @@
 # Manual de Instalación y Mantenimiento en Servidor
 ## Agente Inteligente para Biblioteca Central UABC
 
-Este manual está diseñado para el personal técnico y administradores de sistemas del servidor de la biblioteca. Explica la arquitectura de aislamiento, los pasos de despliegue inicial y el procedimiento para aplicar actualizaciones futuras de forma segura.
+Este manual está diseñado para el personal técnico y administradores de sistemas del servidor de la biblioteca. Explica la arquitectura de aislamiento, los pasos de despliegue inicial y el procedimiento para aplicar actualizaciones futuras de forma segura sin afectar otros sistemas.
 
 ---
 
@@ -33,23 +33,25 @@ Uno de los principales requisitos es garantizar que este proyecto **no interfier
 En la terminal del servidor, clonar el proyecto en el directorio deseado (por ejemplo, en el home del usuario o en `/opt/`):
 
 ```bash
-git clone https://github.com/TU_USUARIO/koha_agent_mvp.git
-cd koha_agent_mvp
+git clone https://github.com/Neraaaauu/agente-koha.git
+cd agente-koha
 ```
 
-#### Paso 3.2: Colocar el Modelo de Lenguaje
-El modelo cuantizado `qwen_entrenado_koha.gguf` (397 MB) debe colocarse dentro de la carpeta `models/`:
+#### Paso 3.2: Descargar y Colocar el Modelo de Lenguaje
+El modelo cuantizado `qwen_entrenado_koha.gguf` (397 MB) no se aloja directamente en GitHub por límites de almacenamiento. Se encuentra disponible en Google Drive:
+
+👉 **[Descargar qwen_entrenado_koha.gguf desde Google Drive](https://drive.google.com/file/d/12S3ppYByCx_Gpxml4yGP-B8VU0RwXh_C/view?usp=sharing)**
+
+Una vez descargado, crear la carpeta `Models/` y colocar el archivo dentro:
 
 ```bash
-mkdir -p models
-# Copiar el archivo qwen_entrenado_koha.gguf dentro de models/
-# Ejemplo via scp desde la máquina local:
-# scp qwen_entrenado_koha.gguf usuario@servidor:~/koha_agent_mvp/models/
+mkdir -p Models
+# Colocar qwen_entrenado_koha.gguf dentro de Models/
 ```
 
-Verificar que el archivo exista:
+Verificar que el archivo exista en la ruta correcta:
 ```bash
-ls -lh models/qwen_entrenado_koha.gguf
+ls -lh Models/qwen_entrenado_koha.gguf
 ```
 
 #### Paso 3.3: Configurar el Puerto (Opcional)
@@ -67,7 +69,7 @@ Ejecutar el comando de construcción y arranque:
 docker compose up -d --build
 ```
 
-Docker compilará la aplicación dentro del contenedor y la levantará en segundo plano.
+Docker compilará la aplicación dentro del contenedor y la levantará en segundo plano en cuestión de segundos.
 
 #### Paso 3.5: Verificación de Estado
 Comprobar que el contenedor esté corriendo:
@@ -79,7 +81,7 @@ Probar el endpoint de estado:
 ```bash
 curl http://localhost:5000/api/status
 ```
-Debe responder con un JSON indicando `"status": "En línea"`, `"isLlmActive": true` y `"mode": "Sandbox..."`.
+Debe responder con un JSON indicando `"status": "En línea"`, `"isLlmActive": true` e `"indexedRecords": 750`.
 
 ---
 
@@ -88,7 +90,7 @@ Debe responder con un JSON indicando `"status": "En línea"`, `"isLlmActive": tr
 Cuando se publiquen mejoras, ajustes en el catálogo o cambios en el código en el repositorio de GitHub, el administrador o encargado puede actualizar el servidor en menos de un minuto con solo dos comandos:
 
 ```bash
-cd ~/koha_agent_mvp
+cd ~/agente-koha
 
 # 1. Descargar los últimos cambios del repositorio
 git pull origin main
