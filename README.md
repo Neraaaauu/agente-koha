@@ -11,7 +11,6 @@ El sistema permite a los estudiantes consultar material bibliográfico, existenc
 * **Inferencia Local en CPU (Sin Costos de Nube):** Utiliza un Small Language Model (**Qwen 2.5 0.5B Instruct**) cuantizado a 4 bits (**GGUF Q4_K_M, 397 MB**) mediante LLamaSharp. Opera de forma 100% on-premise en procesadores convencionales con un consumo menor a **380 MB de memoria RAM**, garantizando privacidad de datos sin pagos por token a APIs externas.
 * **Fine-Tuning Especializado:** Ajustado con **LoRA** ($r=32, \alpha=64$) a lo largo de 1,200 pasos sobre un dataset supervisado de **10,000 pares conversacionales** en formato ChatML adaptados a materias de la UABC y jerga estudiantil cimarrona.
 * **Preprocesamiento y Control de Precisión:** Normalización de siglas (*IA, BD, POO, SO*), filtrado de muletillas coloquiales, algoritmos de *stem matching* en español y supresión de falsos positivos en el catálogo.
-* **Arquitectura Desacoplada (IKohaService):** Cuenta con un entorno **Mock Sandbox** de 750 libros canónicos que reproduce fielmente el estándar OpenAPI de Koha REST v1 (`/api/v1/biblios`). La conmutación al cliente de producción (`KohaApiClient.cs`) se realiza mediante una variable de configuración (`UseMock=false`) en cuanto TI provee las credenciales OAuth2.
 * **Despliegue Contenedorizado:** Totalmente empaquetado con **Docker** y **Docker Compose** para ejecución aislada en servidores Linux compartidos sin alterar otros sistemas.
 
 ---
