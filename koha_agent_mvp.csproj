@@ -12,4 +12,8 @@
     <PackageReference Include="LLamaSharp.Backend.Cpu" Version="0.27.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="catalog_mock.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>
